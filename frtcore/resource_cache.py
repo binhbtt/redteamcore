@@ -1,7 +1,7 @@
 import os
 from frtcore import ResourceConnectorFactory
 from frtcore import FileResourceConnector
-
+from frtcore import FILE_CONNECTOR
 
 class ResourceCache(object):
     def __init__(self, location, **kwargs):
@@ -12,8 +12,8 @@ class ResourceCache(object):
         if self.connector is None and self.filename:
             self.connector = FileResourceConnector(self.location)
 
-        if (self.connector.type == ResourceConnectorFactory.FILE_CONNECTOR or
-                self.connector.type == ResourceConnectorFactory.FILE_CONNECTOR) and \
+        if (self.connector.type == FILE_CONNECTOR or
+                self.connector.type == FILE_CONNECTOR) and \
             not os.path.isdir(self.cache_path):
             os.makedirs(self.cache_path)
 

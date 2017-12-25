@@ -1,3 +1,7 @@
+HTTP_CONNECTOR = 0
+FILE_CONNECTOR = 1
+DIRECTORY_CONNECTOR = 2
+MBOX_CONNECTOR = 3
 from frtcore.resource_connector import ResourceConnectorFactory
 from frtcore.resource_connector import HttpResourceConnector
 from frtcore.resource_connector import FileResourceConnector

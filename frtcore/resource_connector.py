@@ -6,10 +6,11 @@ import json
 import tempfile
 import requests
 
+from frtcore import HTTP_CONNECTOR
+from frtcore import FILE_CONNECTOR
+from frtcore import DIRECTORY_CONNECTOR
+
 class ResourceConnectorFactory(object):
-    HTTP_CONNECTOR = 0
-    FILE_CONNECTOR = 1
-    DIRECTORY_CONNECTOR = 2
 
     def __init__(self):
         pass
@@ -38,7 +39,7 @@ class ResourceConnectorFactory(object):
 class HttpResourceConnector(object):
     def __init__(self, location, **kwargs):
         self.location = location
-        self.type = ResourceConnectorFactory.HTTP_CONNECTOR
+        self.type = HTTP_CONNECTOR
         try:
             self.tlsverify = kwargs['tlsverify']
         except KeyError:
@@ -63,12 +64,6 @@ class HttpResourceConnector(object):
             return False
         return True
 
-    def extract_to_temp(self):
-        temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_file.write(self.open())
-        temp_file.close()
-        return temp_file.name
-
     def delete(self):
         pass
 
@@ -81,7 +76,7 @@ class HttpResourceConnector(object):
 class FileResourceConnector(object):
     def __init__(self, location, **kwargs):
         self.location = location
-        self.type = ResourceConnectorFactory.FILE_CONNECTOR
+        self.type = FILE_CONNECTOR
 
     def open(self):
         file_content = ''
@@ -115,7 +110,7 @@ class DirectoryResourceConnector(object):
 
     def __init__(self, location, **kwargs):
         self.location = location
-        self.type = ResourceConnectorFactory.DIRECTORY_CONNECTOR
+        self.type = DIRECTORY_CONNECTOR
 
     def open(self):
         filenames = [os.path.join(d, x)

@@ -1,7 +1,8 @@
 import json
+import tempfile
 from frtcore import ResourceCache
 from frtcore import ResourceConnectorFactory
-
+from frtcore import HTTP_CONNECTOR
 class Resource(object):
 
     def __init__(self, location, cache_location=None, tlsverify=True):
@@ -9,12 +10,16 @@ class Resource(object):
         self.location = location
         connector_args = {'tlsverify': tlsverify}
 
-        self.connector = ResourceConnectorFactory.create_connector(location, **connector_args)
+        self.connector = None
+        self.create_connector(self.location, **connector_args)
 
         if cache_location:
             self.cache = ResourceCache(cache_location)
         else:
             self.cache = None
+
+    def create_connector(self, location, **connector_args):
+        self.connector = ResourceConnectorFactory.create_connector(location, **connector_args)
 
     def configure_cache(self, cachepath):
         self.cache = ResourceCache(cachepath)
