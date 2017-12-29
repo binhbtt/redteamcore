@@ -48,13 +48,22 @@ class SaveableLoadableDict(TransformableDict):
         if self.__keytransform__(key) == 'name':
             self.name = value
 
-    def save_json(self, location):
+    def save_json(self, location, **kwargs):
         file_path = os.path.join(location, self.type, self.name + ".json")
         with open(file_path, 'w') as json_file_obj:
-            json.dump(dict(self), json_file_obj, indent=4, sort_keys=True)
+            if 'cls' in kwargs:
+                json.dump(dict(self), json_file_obj, indent=4, sort_keys=True, cls=kwargs['cls'])
+            else:
+                json.dump(dict(self), json_file_obj, indent=4, sort_keys=True)
 
     @classmethod
     def load(cls, location):
         with open(location, 'r') as json_file_obj:
             data = json.load(json_file_obj)
         return cls(data)
+
+class JSONTransformableDictEncoder(json.JSONEncoder):
+    def default(self, obj): # pylint: disable=E0202,W0221
+        if isinstance(obj, TransformableDict):
+            return dict(obj)
+        return json.JSONEncoder.default(self, obj)

@@ -1,25 +1,24 @@
 import json
-import tempfile
 from frtcore import ResourceCache
 from frtcore import ResourceConnectorFactory
-from frtcore import HTTP_CONNECTOR
 class Resource(object):
 
-    def __init__(self, location, cache_location=None, tlsverify=True):
+    def __init__(self, location, cache_location=None, tlsverify=True, resource_connector=None):
 
         self.location = location
         connector_args = {'tlsverify': tlsverify}
 
-        self.connector = None
-        self.create_connector(self.location, **connector_args)
+        if not resource_connector:
+            self.connector = ResourceConnectorFactory.create_connector(location, **connector_args)
+        else:
+            self.connector = resource_connector
 
         if cache_location:
             self.cache = ResourceCache(cache_location)
         else:
             self.cache = None
 
-    def create_connector(self, location, **connector_args):
-        self.connector = ResourceConnectorFactory.create_connector(location, **connector_args)
+        self.in_memory_data = None
 
     def configure_cache(self, cachepath):
         self.cache = ResourceCache(cachepath)
@@ -56,3 +55,14 @@ class Resource(object):
             except ValueError:
                 pass
         return data
+
+    @property
+    def connector_type(self):
+        return self.connector.type
+
+    @property
+    def data(self):
+        if not self.in_memory_data:
+            self.in_memory_data = self.read()
+
+        return self.in_memory_data

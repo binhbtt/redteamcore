@@ -3,12 +3,14 @@ import os
 import zlib
 import gzip
 import json
+import mailbox
 import tempfile
 import requests
 
 from frtcore import HTTP_CONNECTOR
 from frtcore import FILE_CONNECTOR
 from frtcore import DIRECTORY_CONNECTOR
+from frtcore import MBOX_CONNECTOR
 
 class ResourceConnectorFactory(object):
 
@@ -123,3 +125,29 @@ class DirectoryResourceConnector(object):
 
     def delete(self):
         os.remove(self.location)
+
+class MBoxResouceConnector(object):
+    def __init__(self, location, **kwargs):
+        self.location = location
+        self.type = MBOX_CONNECTOR
+        self.connector = ResourceConnectorFactory.create_connector(location, **kwargs)
+
+    def open(self):
+        data = None
+        if self.connector.type == HTTP_CONNECTOR:
+            mbox_tempfile = tempfile.NamedTemporaryFile(delete=False)
+            mbox_tempfile.write(self.connector.open())
+            mbox_tempfile.close()
+            data = mailbox.mbox(mbox_tempfile.name)
+        elif self.connector.type == FILE_CONNECTOR:
+            data = mailbox.mbox(self.connector.location)
+
+        return data
+        
+    def exists(self):
+        return self.connector.exists()
+
+    def delete(self):
+        if self.connector.type == HTTP_CONNECTOR:
+            pass
+        self.connector.delete()
