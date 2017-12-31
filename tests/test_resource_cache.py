@@ -1,6 +1,6 @@
 import unittest
 import os
-from frtcore import ResourceCache
+from redteamcore import Resource
 
 class TestCacheFile(unittest.TestCase):
 
@@ -14,26 +14,26 @@ class TestCacheFile(unittest.TestCase):
             fileobj.write("")
 
     def test_init(self):
-        test_cache_file = ResourceCache(self.location)
+        test_cache_file = Resource(self.location)
         self.assertEqual(self.location, test_cache_file.location)
         self.assertEqual(self.cache_file, test_cache_file.filename)
-        self.assertEqual(self.cache_path, test_cache_file.cache_path)
+        self.assertEqual(self.cache_path, test_cache_file.filepath)
 
     def test_init_two(self):
-        test_cache_file = ResourceCache(self.location)
+        test_cache_file = Resource(self.location)
         self.assertEqual(self.location, test_cache_file.location)
         self.assertEqual(self.cache_file, test_cache_file.filename)
-        self.assertEqual(self.cache_path, test_cache_file.cache_path)
+        self.assertEqual(self.cache_path, test_cache_file.filepath)
 
     def test_exists(self):
-        test_cache_file = ResourceCache(self.location)
-        self.assertTrue(test_cache_file.exists())
+        test_cache_file = Resource(self.location)
+        self.assertTrue(test_cache_file.exists)
 
     def test_delete(self):
-        test_cache_file = ResourceCache(self.location)
-        self.assertTrue(test_cache_file.exists())
+        test_cache_file = Resource(self.location)
+        self.assertTrue(test_cache_file.exists)
         test_cache_file.delete()
-        self.assertFalse(test_cache_file.exists())
+        self.assertFalse(test_cache_file.exists)
 
     def tearDown(self):
         if os.path.isfile(self.location):

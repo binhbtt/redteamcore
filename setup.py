@@ -24,8 +24,8 @@ class CleanPycCommand(Command):
         for filename in filenames:
             os.remove(filename)
 
-setup(name='frtcore',
-      packages=['frtcore'],
+setup(name='redteamcore',
+      packages=['redteamcore'],
       install_requires=['requests', 'python-dateutil'],
       version='0.0.1',
       description='Core Python modules for use in tooling.',
@@ -34,7 +34,7 @@ setup(name='frtcore',
       license='GPLv3',
       url='https://github.com/fedoraredteam/frtcore',
       download_url='https://github.com/fedoraredteam/frtcore/archive/0.0.1',
-      keywords=['frt', 'exploit', 'linux'],
+      keywords=['frt', 'redteam', 'linux'],
       classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',

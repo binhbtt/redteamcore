@@ -1,6 +1,6 @@
 import collections
-import os
 import json
+from redteamcore import Resource
 
 class TransformableDict(collections.MutableMapping):
     def __init__(self, *args, **kwargs):
@@ -28,15 +28,30 @@ class TransformableDict(collections.MutableMapping):
     def json(self):
         return json.dumps(dict(self), indent=4, sort_keys=True)
 
+    def xml(self):
+        pass
 
-class SaveableLoadableDict(TransformableDict):
+    def html(self):
+        pass
+
+
+
+class SaveableLoadableDict(TransformableDict, Resource):
 
     def __init__(self, *args, **kwargs):
+
+        TransformableDict.__init__(self, *args, **kwargs)
         try:
-            self.type = kwargs.pop('type')
+            location = kwargs.pop('location')
+            try:
+                logger = kwargs.pop('logger')
+            except KeyError:
+                logger = None
+            Resource.__init__(self, location, logger=logger, transform_cls=JSONTransformableDictEncoder)
+
         except KeyError:
-            self.type = ''
-        super(SaveableLoadableDict, self).__init__(*args, **kwargs)
+            pass
+
         try:
             self.name = kwargs['name']
         except KeyError:
@@ -48,19 +63,14 @@ class SaveableLoadableDict(TransformableDict):
         if self.__keytransform__(key) == 'name':
             self.name = value
 
-    def save_json(self, location, **kwargs):
-        file_path = os.path.join(location, self.type, self.name + ".json")
-        with open(file_path, 'w') as json_file_obj:
-            if 'cls' in kwargs:
-                json.dump(dict(self), json_file_obj, indent=4, sort_keys=True, cls=kwargs['cls'])
-            else:
-                json.dump(dict(self), json_file_obj, indent=4, sort_keys=True)
-
-    @classmethod
-    def load(cls, location):
-        with open(location, 'r') as json_file_obj:
-            data = json.load(json_file_obj)
-        return cls(data)
+    # pylint: disable=E0202,W0221
+    def write(self):
+        if self.location.endswith('.json'):
+            Resource.write(self, dict(self))
+        elif self.location.endswith('.html'):
+            Resource.write(self, self.html())
+        elif self.location.endswith('.xml'):
+            Resource.write(self, self.xml())
 
 class JSONTransformableDictEncoder(json.JSONEncoder):
     def default(self, obj): # pylint: disable=E0202,W0221

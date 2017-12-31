@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 .vscode/
 .eggs/
+!nvd-recent.meta
 frtcore.egg-info/
 # User-specific files
 *.suo
@@ -288,3 +289,4 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+dist/

@@ -4,9 +4,9 @@ import json
 import gzip
 import StringIO
 import mock
-from frtcore import Resource
-from frtcore import ResourceConnectorFactory
-from frtcore import HttpResourceConnector
+from redteamcore import Resource
+from redteamcore import ResourceConnectorFactory
+from redteamcore import HttpResourceConnector
 
 class TestResource(unittest.TestCase):
 
@@ -81,7 +81,7 @@ class TestResource(unittest.TestCase):
         self.assertEqual(json.loads("{ \"name\":\"John\", \"age\":31, \"city\":\"New York\" }"), data)
 
 
-    @mock.patch('frtcore.HttpResourceConnector._decode_compressed_content')
+    @mock.patch('redteamcore.HttpResourceConnector._decode_compressed_content')
     @mock.patch('requests.get')
     def test_compressed_text_from_url(self, mock_url_call, mock_gzip_read):
         mock_gzip_read.return_value = "Hello World"
@@ -91,7 +91,7 @@ class TestResource(unittest.TestCase):
         data = resource.read()
         self.assertEqual("Hello World", data)
 
-    @mock.patch('frtcore.HttpResourceConnector._decode_compressed_content')
+    @mock.patch('redteamcore.HttpResourceConnector._decode_compressed_content')
     @mock.patch('requests.get')
     def test_compressed_json_from_url(self, mock_url_call, mock_gzip_read):
         mock_gzip_read.return_value = "{ \"name\":\"John\", \"age\":31, \"city\":\"New York\" }"
