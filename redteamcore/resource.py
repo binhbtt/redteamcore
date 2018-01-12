@@ -1,18 +1,14 @@
 import json
 import os
-import logging
 from redteamcore import ResourceConnectorFactory
 from redteamcore import FILE_CONNECTOR
+from redteamcore import log as FRTLogger
 
 class Resource(object):
     # pylint: disable=R0913
-    def __init__(self, location, tlsverify=True, resource_connector=None, logger=None, transform_cls=None):
+    def __init__(self, location, tlsverify=True, resource_connector=None, transform_cls=None):
 
         connector_args = {'tlsverify': tlsverify}
-        self.log = None
-        if logger:
-            connector_args = {'logger': logger}
-            self.log = logging.getLogger(logger)
 
         if transform_cls:
             connector_args = {'transform_cls': transform_cls}
@@ -25,8 +21,7 @@ class Resource(object):
         self.in_memory_data = None
 
     def update(self):
-        if self.log:
-            self.log.debug("Update for resource location %s", self.location)
+        FRTLogger.debug("Update for resource location %s", self.location)
         return self.connector.open()
 
     def read(self):

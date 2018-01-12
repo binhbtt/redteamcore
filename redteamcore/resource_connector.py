@@ -5,8 +5,9 @@ import gzip
 import json
 import mailbox
 import tempfile
-import logging
+#import logging
 import requests
+from redteamcore import FRTLogger
 
 HTTP_CONNECTOR = 0
 FILE_CONNECTOR = 1
@@ -50,20 +51,14 @@ class HttpResourceConnector(object):
     def __init__(self, location, **kwargs):
         self.location = location
         self.type = HTTP_CONNECTOR
-        self.log = None
         try:
             self.tlsverify = kwargs['tlsverify']
         except KeyError:
             self.tlsverify = True
 
-        try:
-            self.log = logging.getLogger(kwargs['logger'])
-        except KeyError:
-            pass
 
     def open(self):
-        if self.log:
-            self.log.debug("HTTP Connector - opening location %s", self.location)
+        FRTLogger.debug("HTTP Connector - opening location %s", self.location)
         data = None
         try:
             response = requests.get(self.location, verify=self.tlsverify, stream=True)
@@ -98,12 +93,7 @@ class FileResourceConnector(object):
     def __init__(self, location, **kwargs):
         self.location = location
         self.type = FILE_CONNECTOR
-        self.log = None
         self.transform_cls = None
-        try:
-            self.log = logging.getLogger(kwargs['logger'])
-        except KeyError:
-            pass
 
         try:
             self.transform_cls = kwargs.pop('transform_cls')
@@ -111,8 +101,7 @@ class FileResourceConnector(object):
             pass
 
     def open(self):
-        if self.log:
-            self.log.debug("File Connector - opening location %s", self.location)
+        FRTLogger.debug("File Connector - opening location %s", self.location)
         file_content = ''
         if self.location.endswith(".gz"):
             with gzip.open(self.location, 'rb') as gzip_file_obj:
@@ -148,15 +137,9 @@ class DirectoryResourceConnector(object):
     def __init__(self, location, **kwargs):
         self.location = location
         self.type = DIRECTORY_CONNECTOR
-        self.log = None
-        try:
-            self.log = logging.getLogger(kwargs['logger'])
-        except KeyError:
-            pass
 
     def open(self):
-        if self.log:
-            self.log.debug("Directory Connector - opening location %s", self.location)
+        FRTLogger.debug("Directory Connector - opening location %s", self.location)
         filenames = [os.path.join(d, x)
                      for d, _, files in os.walk(self.location)
                      for x in files]
@@ -173,15 +156,9 @@ class MBoxResouceConnector(object):
         self.location = location
         self.type = MBOX_CONNECTOR
         self.connector = ResourceConnectorFactory.create_connector(location, **kwargs)
-        self.log = None
-        try:
-            self.log = logging.getLogger(kwargs['logger'])
-        except KeyError:
-            pass
 
     def open(self):
-        if self.log:
-            self.log.debug("MBox Connector - opening location %s", self.location)
+        FRTLogger.debug("MBox Connector - opening location %s", self.location)
         data = None
         if self.connector.type == HTTP_CONNECTOR:
             mbox_tempfile = tempfile.NamedTemporaryFile(delete=False)

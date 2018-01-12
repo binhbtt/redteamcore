@@ -1,3 +1,4 @@
+from redteamcore import log as FRTLogger
 from redteamcore.resource_connector import HTTP_CONNECTOR
 from redteamcore.resource_connector import FILE_CONNECTOR
 from redteamcore.resource_connector import DIRECTORY_CONNECTOR
