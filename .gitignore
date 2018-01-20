@@ -5,7 +5,8 @@
 .vscode/
 .eggs/
 !nvd-recent.meta
-frtcore.egg-info/
+
+
 # User-specific files
 *.suo
 *.user
@@ -290,3 +291,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 dist/
+*.egg-info/*
+redteamcore/*.egg-info/
+redteamcore/redteamcore.egg-info/
