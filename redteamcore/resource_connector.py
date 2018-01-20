@@ -109,7 +109,10 @@ class FileResourceConnector(object):
         else:
             with open(self.location, 'r') as file_obj:
                 file_content = file_obj.read()
-        return file_content.decode('string-escape').strip('"')
+        try:
+            return file_content.decode('string-escape').strip('"')
+        except ValueError:
+            return file_content
 
     def write(self, file_content):
         _, file_extension = os.path.splitext(self.location)

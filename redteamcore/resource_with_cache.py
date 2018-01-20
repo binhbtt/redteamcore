@@ -35,7 +35,7 @@ class ResourceWithCache(Resource):
     def location(self):
         if self.cache:
             return self.cache.location
-        return self.location
+        return self.connector.location
 
     @property
     def cache_path(self):

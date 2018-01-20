@@ -56,6 +56,10 @@ class Resource(object):
 
         return self.in_memory_data
 
+    @data.setter
+    def data(self, new_data):
+        self.in_memory_data = new_data
+
     @property
     def location(self):
         return self.connector.location
